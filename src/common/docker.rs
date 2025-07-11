@@ -1,4 +1,4 @@
-use bollard::{container::StartContainerOptions, Docker};
+use bollard::{image::ListImagesOptions, Docker};
 use rmcp::{
     handler::server::tool::ToolRouter, model::*, tool, tool_handler, tool_router,
     Error as McpError, ServerHandler,
@@ -22,13 +22,26 @@ impl DockerRouter {
     pub async fn run_container(&self) -> Result<CallToolResult, McpError> {
         let docker = Docker::connect_with_local_defaults().unwrap();
 
-        docker
-            .start_container("hello-world", None::<StartContainerOptions<String>>)
+        Ok(CallToolResult::success(vec![Content::text(format!(
+            "Container Running"
+        ))]))
+    }
+
+    #[tool(description = "List all container images")]
+    pub async fn list_images(&self) -> Result<CallToolResult, McpError> {
+        let docker = Docker::connect_with_local_defaults().unwrap();
+
+        let images = &docker
+            .list_images(Some(ListImagesOptions::<String> {
+                all: true,
+                ..Default::default()
+            }))
             .await
             .unwrap();
 
         Ok(CallToolResult::success(vec![Content::text(format!(
-            "Container Running"
+            "Images: {:?}",
+            images
         ))]))
     }
 }
