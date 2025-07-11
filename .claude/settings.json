@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "container-mcp": {
+      "command": "cargo",
+      "args": ["run"],
+      "env": {
+        "RUST_LOG": "debug"
+      }
+    }
+  }
+}
